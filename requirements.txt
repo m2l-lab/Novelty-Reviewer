@@ -1,0 +1,4 @@
+# Everything needed for the notebooks, the model, the originality pipeline and the evaluation.
+# For a lighter install see the extras in pyproject.toml; for the exact training environment see
+# requirements/full-environment.txt.
+-e .[all]

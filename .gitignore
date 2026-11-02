@@ -1,0 +1,39 @@
+# Paper (separate Overleaf repository)
+ECIR-2027/
+
+# Release dataset: published on Hugging Face, not in this repository
+novelty_dataset_release/
+
+# OpenReview metadata and privacy redaction report: contain real author names, never publish
+Dataset/openreview_metadata/
+
+# Intermediate dataset files: the dataset is published on Hugging Face
+Dataset/Human_annotated_data/
+Dataset/llm_summarized_dataset/
+
+# Local data, outputs and caches created by the scripts and notebooks
+data/
+results/
+reports/
+checkpoints/
+papers/
+logs/
+.cache/
+outputs/
+
+# Credentials
+*credentials*.json
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Logs and OS files
+*.log
+.DS_Store

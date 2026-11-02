@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this dataset, model or code, please cite the paper below."
+title: "Novelty Reviewer"
+type: software
+repository-code: "https://github.com/m2l-lab/Novelty-Reviewer"
+authors:
+  - family-names: Mostafa
+    given-names: Abeer
+  - family-names: Nguyen
+    given-names: Thi Huyen
+  - family-names: Ahmadi
+    given-names: Zahra
+preferred-citation:
+  type: article
+  title: "Are We Truly Innovating? A Qualitative and Quantitative Study of Originality in AI Research Papers"
+  authors:
+    - family-names: Mostafa
+      given-names: Abeer
+    - family-names: Nguyen
+      given-names: Thi Huyen
+    - family-names: Ahmadi
+      given-names: Zahra
+  year: 2026
+  journal: "arXiv preprint arXiv:2602.06054"
+  url: "https://arxiv.org/abs/2602.06054"
+  identifiers:
+    - type: doi
+      value: 10.48550/arXiv.2602.06054

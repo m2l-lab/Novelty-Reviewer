@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "novelty-reviewer"
+version = "1.0.0"
+description = "Dataset and models for reviewer-aligned novelty assessment of research papers"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [
+    { name = "Abeer Mostafa" },
+    { name = "Thi Huyen Nguyen" },
+    { name = "Zahra Ahmadi" },
+]
+keywords = ["peer review", "novelty", "scholarly documents", "llm", "openreview"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Intended Audience :: Science/Research",
+]
+dependencies = [
+    "datasets>=2.19",
+    "pandas>=2.0",
+    "pyarrow>=14",
+    "numpy>=1.24",
+    "requests>=2.31",
+]
+
+[project.optional-dependencies]
+# Novelty Reviewer model inference
+model = ["torch>=2.1", "transformers>=4.43", "accelerate>=0.30", "pymupdf4llm>=0.0.17"]
+# Retrieval-augmented originality reports
+pipeline = ["novelty-reviewer[model]", "sentence-transformers>=3.0", "networkx>=3.0", "PyPDF2>=3.0",
+            "matplotlib>=3.7"]
+# Metrics and baseline evaluation
+eval = ["novelty-reviewer[model]", "scikit-learn>=1.3", "scipy>=1.10", "matplotlib>=3.7", "openai>=1.30"]
+# Notebooks
+notebooks = ["jupyter", "matplotlib>=3.7", "scikit-learn>=1.3", "scipy>=1.10"]
+all = ["novelty-reviewer[pipeline,eval,notebooks]"]
+dev = ["pytest>=7", "scikit-learn>=1.3", "scipy>=1.10"]
+
+[project.scripts]
+novelty-reviewer = "novelty_reviewer.cli:main"
+
+[project.urls]
+Model = "https://huggingface.co/AbeerMostafa/Novelty_Reviewer"
+Repository = "https://github.com/m2l-lab/Novelty-Reviewer"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Novelty Reviewer</title>
+<meta name="description" content="Novelty Reviewer: an open dataset, model and framework for assessing the novelty of research papers the way expert reviewers do, grounded in the literature.">
+<meta name="keywords" content="novelty assessment, peer review, originality, scholarly document processing, dataset, large language models, ICLR, NeurIPS, OpenReview">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Novelty Reviewer">
+<meta property="og:description" content="An open dataset, model and framework for assessing the novelty of research papers the way expert reviewers do.">
+<meta property="og:url" content="https://m2l-lab.github.io/Novelty-Reviewer/">
+<meta property="og:image" content="https://m2l-lab.github.io/Novelty-Reviewer/assets/overview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f3a68'/%3E%3Ctext x='16' y='21' font-family='-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif' font-size='15' font-weight='700' text-anchor='middle' fill='%23fff'%3ENR%3C/text%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Novelty Reviewer Dataset",
+  "description": "Expert novelty judgments from 102,021 official reviews of 37,899 ICLR and NeurIPS submissions (2022-2025), with verbatim novelty excerpts, paper-level novelty assessments and a four-point novelty score.",
+  "url": "https://huggingface.co/datasets/AbeerMostafa/Novelty-Reviewer-Dataset",
+  "license": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "creator": [
+    {"@type": "Person", "name": "Abeer Mostafa"},
+    {"@type": "Person", "name": "Thi Huyen Nguyen"},
+    {"@type": "Person", "name": "Zahra Ahmadi"}
+  ],
+  "citation": "https://arxiv.org/abs/2602.06054"
+}
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #fbfbfa;
+  --surface: #ffffff;
+  --surface-2: #f3f4f6;
+  --border: #e3e5e8;
+  --text: #14171c;
+  --text-2: #4a4f57;
+  --text-3: #6b7079;
+  --brand: #1f3a68;
+  --link: #2f5596;
+  --brand-soft: #e9eef7;
+  --accent: #b8860b;
+  --code-bg: #0f1724;
+  --code-text: #e6e9ef;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --grid: #e8e9ec;
+  --radius: 12px;
+  --maxw: 1080px;
+  --prose: 820px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --bg: #111317; --surface: #181b20; --surface-2: #1f232a; --border: #2c313a;
+    --text: #eef0f3; --text-2: #c2c6cd; --text-3: #959aa3;
+    --link: #b9cdf0; --brand-soft: #1d2a40; --accent: #e0b44c;
+    --code-bg: #0b0f16; --series-1: #3987e5; --series-2: #d95926; --grid: #2a2f37;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111317; --surface: #181b20; --surface-2: #1f232a; --border: #2c313a;
+  --text: #eef0f3; --text-2: #c2c6cd; --text-3: #959aa3;
+  --link: #b9cdf0; --brand-soft: #1d2a40; --accent: #e0b44c;
+  --code-bg: #0b0f16; --series-1: #3987e5; --series-2: #d95926; --grid: #2a2f37;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body { margin: 0; font-family: var(--font); font-size: 17px; line-height: 1.7; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; }
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+code { font-family: var(--mono); font-size: .86em; }
+:not(pre) > code { background: var(--surface-2); border: 1px solid var(--border); padding: .06em .36em; border-radius: 5px; }
+
+/* Navigation */
+.nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: saturate(160%) blur(10px); border-bottom: 1px solid var(--border); }
+.nav .wrap { display: flex; align-items: center; gap: 20px; height: 58px; }
+.nav .logo { font-weight: 700; color: var(--text); letter-spacing: -.01em; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.nav .logo:hover { text-decoration: none; }
+.nav .logo .mark { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 7px; background: #1f3a68; color: #fff; font-size: 12.5px; font-weight: 700; }
+.nav ul { display: flex; gap: 2px; list-style: none; margin: 0 0 0 auto; padding: 0; }
+.nav ul a { display: block; padding: 6px 10px; border-radius: 7px; color: var(--text-2); font-size: 14px; white-space: nowrap; }
+.nav ul a:hover, .nav ul a.active { background: var(--surface-2); color: var(--text); text-decoration: none; }
+.theme-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text-2); border-radius: 8px; width: 34px; height: 34px; cursor: pointer; display: grid; place-items: center; flex: none; }
+.theme-btn:hover { color: var(--text); }
+.theme-btn svg { width: 17px; height: 17px; }
+
+/* Hero */
+.hero { padding: 64px 0 52px; text-align: center; background: radial-gradient(1200px 400px at 50% -120px, var(--brand-soft), transparent 70%); }
+.hero h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(32px, 4vw, 42px); line-height: 1.15; letter-spacing: -.01em; margin: 0 0 12px; }
+.hero .subtitle { font-size: clamp(17px, 2vw, 19.5px); color: var(--text-2); max-width: 720px; margin: 0 auto 28px; line-height: 1.6; }
+.btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; font-size: 15px; font-weight: 600; border: 1px solid var(--border); background: var(--surface); color: var(--text); transition: transform .12s ease, border-color .12s ease; }
+.btn:hover { text-decoration: none; transform: translateY(-1px); border-color: var(--text-3); }
+.btn.primary { background: #1f3a68; border-color: #1f3a68; color: #fff; }
+.btn svg { width: 17px; height: 17px; flex: none; }
+
+/* Sections */
+section { padding: 60px 0; border-top: 1px solid var(--border); }
+section.alt { background: var(--surface); }
+.kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+h2 { font-family: var(--font); font-size: clamp(22px, 2.6vw, 26px); font-weight: 700; line-height: 1.2; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; }
+h3 { font-size: 19px; margin: 38px 0 10px; letter-spacing: -.005em; }
+p, .prose { max-width: var(--prose); }
+p { margin: 0 0 16px; color: var(--text-2); }
+p strong, li strong { color: var(--text); }
+.lead { font-size: 18.5px; color: var(--text-2); }
+ul.list, ol.list { max-width: var(--prose); padding-left: 22px; margin: 0 0 18px; color: var(--text-2); }
+ul.list li, ol.list li { margin-bottom: 9px; padding-left: 4px; }
+ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 8px 0 18px; max-width: var(--prose); }
+ol.steps > li { counter-increment: s; position: relative; padding: 0 0 18px 50px; color: var(--text-2); }
+ol.steps > li::before { content: counter(s); position: absolute; left: 0; top: 1px; width: 30px; height: 30px; border-radius: 50%; background: #1f3a68; color: #fff; font-size: 14px; font-weight: 700; display: grid; place-items: center; }
+ol.steps > li:not(:last-child)::after { content: ""; position: absolute; left: 14.5px; top: 36px; bottom: 6px; width: 1px; background: var(--border); }
+ol.steps h4 { margin: 0 0 4px; font-size: 16.5px; color: var(--text); }
+.muted { color: var(--text-3); font-size: 14.5px; }
+
+/* Figure */
+figure { margin: 30px 0 8px; max-width: var(--prose); }
+.figure-box { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+.figure-box img { width: 100%; height: auto; display: block; }
+figcaption { color: var(--text-3); font-size: 14px; margin: 10px auto 0; text-align: center; max-width: 760px; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; margin: 18px 0 22px; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
+th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-size: 12.5px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .04em; border-bottom: 2px solid var(--border); }
+td { color: var(--text-2); }
+td:first-child { color: var(--text); }
+td.n, th.n { text-align: right; white-space: nowrap; }
+tr.hl td { background: var(--brand-soft); font-weight: 650; color: var(--text); }
+.score { display: inline-grid; place-items: center; min-width: 30px; height: 24px; padding: 0 6px; border-radius: 6px; font-weight: 700; font-size: 13.5px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); }
+
+/* Charts */
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 26px 0 10px; }
+.chart { position: relative; }
+.chart h4 { margin: 0; font-size: 15px; }
+.chart .sub { color: var(--text-3); font-size: 13px; margin-bottom: 8px; }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart svg text { font-family: var(--font); fill: var(--text-3); font-size: 12px; }
+.chart svg text.val { fill: var(--text-2); font-weight: 600; }
+.chart svg text.cat { fill: var(--text-2); font-size: 12.5px; }
+.chart .gridline { stroke: var(--grid); }
+.chart .baseline { stroke: var(--text-3); }
+.chart .bar { transition: opacity .12s ease; }
+.chart .hit { fill: transparent; }
+.chart .dim .bar { opacity: .35; }
+.chart .dim .on .bar { opacity: 1; }
+.legend { display: flex; gap: 16px; font-size: 13px; color: var(--text-2); margin-bottom: 6px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.tip { position: absolute; pointer-events: none; background: var(--text); color: var(--bg); font-size: 13px; line-height: 1.4; padding: 7px 10px; border-radius: 8px; white-space: nowrap; opacity: 0; transform: translate(-50%, -110%); transition: opacity .08s ease; z-index: 5; }
+.tip.on { opacity: 1; }
+details.data { margin-top: 6px; font-size: 13.5px; color: var(--text-3); }
+details.data summary { cursor: pointer; }
+details.data table { font-size: 13.5px; margin-top: 6px; }
+
+/* Example record */
+
+/* Code */
+.code { position: relative; background: var(--code-bg); color: var(--code-text); border-radius: var(--radius); margin: 0 0 18px; border: 1px solid #1d2635; }
+.code .bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px 8px 16px; border-bottom: 1px solid #1d2635; font-size: 12.5px; color: #8b95a7; }
+.code pre { margin: 0; padding: 14px 16px 16px; overflow-x: auto; line-height: 1.6; font-size: 14px; }
+.code.wrap pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.copy { background: transparent; color: #aab4c5; border: 1px solid #2a3547; border-radius: 6px; font-size: 12px; padding: 3px 10px; cursor: pointer; font-family: var(--font); }
+.copy:hover { color: #fff; border-color: #4a5a75; }
+.tok-k { color: #c792ea; } .tok-s { color: #c3e88d; } .tok-c { color: #6f7b91; font-style: italic; } .tok-f { color: #82aaff; } .tok-n { color: #f78c6c; }
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin: 26px 0 16px; flex-wrap: wrap; }
+.tabs button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 14px; font: inherit; font-size: 15px; font-weight: 600; color: var(--text-3); cursor: pointer; margin-bottom: -1px; }
+.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--link); }
+.tabpanel[hidden] { display: none; }
+
+/* FAQ */
+.faq { max-width: var(--prose); border-top: 1px solid var(--border); }
+.faq details { border-bottom: 1px solid var(--border); padding: 4px 0; }
+.faq summary { cursor: pointer; list-style: none; padding: 12px 30px 12px 0; font-weight: 600; color: var(--text); position: relative; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 4px; top: 9px; font-size: 22px; font-weight: 400; color: var(--text-3); }
+.faq details[open] summary::after { content: "−"; }
+.faq details p { margin: 0 0 14px; }
+
+.thanks { font-family: var(--serif); font-size: 21px; line-height: 1.55; color: var(--text); font-style: italic; margin-top: 24px; }
+
+footer { border-top: 1px solid var(--border); padding: 32px 0 44px; color: var(--text-3); font-size: 14px; }
+footer p { color: var(--text-3); margin: 0 0 6px; max-width: none; }
+
+@media (max-width: 900px) {
+  .nav ul { display: none; }
+  .nav .theme-btn { margin-left: auto; }
+  .charts { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  body { font-size: 16.5px; }
+  .hero { padding-top: 44px; }
+  section { padding: 46px 0; }
+  .code pre { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+@media print { .nav, .theme-btn, .copy { display: none; } }
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <a class="logo" href="#top"><span class="mark">NR</span>Novelty Reviewer</a>
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#dataset">Dataset</a></li>
+      <li><a href="#framework">Framework</a></li>
+      <li><a href="#get-started">Get started</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#arena">ARENA</a></li>
+      <li><a href="#citation">Citation</a></li>
+    </ul>
+    <button class="theme-btn" id="theme" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <h1>Novelty Reviewer</h1>
+    <p class="subtitle">A large-scale dataset and model for reviewer-aligned novelty assessment of research papers</p>
+    <div class="btns">
+      <a class="btn primary" href="https://arxiv.org/abs/2602.06054">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>Paper</a>
+      <a class="btn" href="https://github.com/m2l-lab/Novelty-Reviewer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 8.36 22.9c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>Code</a>
+      <a class="btn" href="https://huggingface.co/datasets/AbeerMostafa/Novelty-Reviewer-Dataset">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>Dataset</a>
+      <a class="btn" href="https://huggingface.co/AbeerMostafa/Novelty_Reviewer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>Model</a>
+      <a class="btn" href="#citation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h4v4H7zM7 11c0 3-1 5-3 6M15 7h4v4h-4zM15 11c0 3-1 5-3 6"/></svg>Cite</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="overview">
+  <div class="wrap">
+    <h2>Overview</h2>
+    <p class="lead">"Is this new?" is one of the questions that decides the fate of a paper, and one of the questions reviewers agree on least. A reviewer can only compare a submission with the work they happen to know, and in fields that publish thousands of papers a year, that knowledge is always partial. The result is novelty judgments that differ from reviewer to reviewer, and that are hard to verify because the comparisons behind them are rarely spelled out.</p>
+    <p>Novelty Reviewer approaches the problem from two directions. First, it learns what novelty means <em>to reviewers</em>, by studying how they actually judged it in more than a hundred thousand public reviews. Second, it does not rely on memory alone: it searches the literature for the closest prior work and makes those comparisons explicit. The project releases three things you can use independently:</p>
+    <ul class="list">
+      <li><strong>A dataset</strong> of reviewer novelty judgments for ICLR and NeurIPS submissions, with the original reviews, the passages that discuss novelty, and a paper-level novelty score and assessment.</li>
+      <li><strong>A model</strong>, Llama-3.1-8B-Instruct fine-tuned on this data, that reads a full paper and returns a novelty score with a reviewer-style justification.</li>
+      <li><strong>A framework</strong> that combines the model with literature retrieval and a similarity graph to produce an originality report naming the most similar prior papers.</li>
+    </ul>
+    <p>These are meant for reviewers and area chairs who want a second opinion and a list of related work to check, for authors who want to see how the originality of a draft may come across, and for researchers studying automated reviewing or peer review itself.</p>
+
+    <figure>
+      <div class="figure-box"><img src="assets/overview.png" alt="Overview of the Novelty Reviewer framework: reviews are aggregated into the dataset used to fine-tune the LLM; a new paper goes through structured knowledge extraction, semantic search and retrieval, and a similarity graph; the fine-tuned LLM combines the top-k similar papers into a full originality analysis report." loading="lazy" width="2383" height="946"></div>
+      <figcaption>Left: reviews are turned into training data for the model. Right: for a new paper, structured knowledge extraction, retrieval and a similarity graph select the closest prior work, which the fine-tuned model uses to write the originality report.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="dataset" class="alt">
+  <div class="wrap">
+    <h2>Dataset</h2>
+    <p class="lead">The dataset links 37,899 submissions to ICLR and NeurIPS (2022–2025) with their 102,021 official reviews, collected through the OpenReview API. Each record is one submission: its metadata, all of its reviews with their numerical scores, and a novelty annotation derived from what the reviewers wrote.</p>
+
+    <h3>How the novelty labels are made</h3>
+    <p>Reviewers rarely write a single sentence about novelty. Their view is spread across the review, sometimes stated outright and sometimes implied by a comparison or a criticism. The annotation therefore works in two stages, both with Llama-3.1-8B-Instruct:</p>
+    <ol class="list">
+      <li><strong>Extraction, per review.</strong> The model copies, word for word, every passage that bears on novelty: explicit judgments ("a novel approach"), implicit ones ("closely follows prior work on…", "an incremental contribution") and statements about the significance of the contribution. Descriptions of what the paper does and reviewer questions are excluded. These passages are released as <code>novelty_excerpts</code>.</li>
+      <li><strong>Aggregation, per paper.</strong> The model reads all reviews of the paper together with the extracted passages and writes one assessment that reflects the reviewers' collective view, with a short justification and a detailed assessment. It also assigns a score on a four-point scale. The instructions forbid the model from adding its own judgment: the score describes what the reviewers think.</li>
+    </ol>
+    <p>We call the resulting label the <strong>Expert-Consensus Novelty Alignment (ECNA)</strong>. Its four levels are defined as follows:</p>
+
+    <div class="table-wrap prose">
+      <table>
+        <thead><tr><th style="width:70px">Score</th><th style="width:170px">Label</th><th>Reviewers see the work as…</th></tr></thead>
+        <tbody>
+          <tr><td><span class="score">−1</span></td><td>Not novel</td><td>derivative, largely replicating existing approaches</td></tr>
+          <tr><td><span class="score">0</span></td><td>Limited novelty</td><td>a minor variation or application of known methods</td></tr>
+          <tr><td><span class="score">1</span></td><td>Moderately novel</td><td>original, but overlapping notably with prior work or extending existing ideas</td></tr>
+          <tr><td><span class="score">2</span></td><td>Highly novel</td><td>introducing fundamentally new ideas, methods or problem formulations</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Scale and coverage</h3>
+    <p>Submissions to both venues have grown quickly; ICLR more than quadrupled between 2022 and 2025. The labels follow the pattern one would expect at selective venues: most submissions are seen as moderately novel, while clearly derivative and clearly groundbreaking work are both rare. This imbalance matters when you evaluate a model, which is why we report macro-averaged metrics.</p>
+
+    <div class="charts">
+      <div class="chart" id="chart-venues">
+        <h4>Submissions per venue and year</h4>
+        <div class="sub">Submissions with official reviews</div>
+        <div class="legend"><span><i style="background:var(--series-1)"></i>ICLR</span><span><i style="background:var(--series-2)"></i>NeurIPS</span></div>
+        <svg viewBox="0 0 480 250" role="img" aria-labelledby="venues-title"><title id="venues-title">Grouped bar chart of submissions per year: ICLR 2,420, 3,431, 6,644 and 10,474; NeurIPS 2,543, 3,108, 3,819 and 5,460 for 2022 to 2025.</title></svg>
+        <details class="data"><summary>Show data</summary>
+          <table><thead><tr><th>Venue</th><th class="n">2022</th><th class="n">2023</th><th class="n">2024</th><th class="n">2025</th><th class="n">Total</th></tr></thead>
+          <tbody><tr><td>ICLR</td><td class="n">2,420</td><td class="n">3,431</td><td class="n">6,644</td><td class="n">10,474</td><td class="n">22,969</td></tr>
+          <tr><td>NeurIPS</td><td class="n">2,543</td><td class="n">3,108</td><td class="n">3,819</td><td class="n">5,460</td><td class="n">14,930</td></tr></tbody></table>
+        </details>
+      </div>
+      <div class="chart" id="chart-labels">
+        <h4>ECNA score distribution</h4>
+        <div class="sub">Share of submissions per score</div>
+        <svg viewBox="0 0 480 250" role="img" aria-labelledby="labels-title"><title id="labels-title">Bar chart of ECNA scores: not novel 7.7 percent, limited novelty 20.1 percent, moderately novel 63.8 percent, highly novel 8.4 percent.</title></svg>
+      </div>
+    </div>
+
+    <h3>Data schema</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:320px">Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>paper_id</code></td><td>OpenReview identifier; the paper is at <code>openreview.net/forum?id=&lt;paper_id&gt;</code></td></tr>
+          <tr><td><code>title</code>, <code>abstract</code>, <code>venue</code>, <code>year</code></td><td>Submission metadata from OpenReview</td></tr>
+          <tr><td><code>split</code>, <code>in_eval_subset</code></td><td>Train/test assignment and the flag for the 500-paper evaluation subset</td></tr>
+          <tr><td><code>reviews</code></td><td>All official reviews: full text in markdown, overall rating, confidence and the venue's sub-scores (soundness, contribution, technical novelty, originality, …)</td></tr>
+          <tr><td><code>review_template</code></td><td>The venue's review form, with its sections and score rubrics</td></tr>
+          <tr><td><code>novelty_excerpts</code></td><td>Verbatim review passages that assess novelty</td></tr>
+          <tr><td><code>novelty_score</code></td><td>ECNA score in {−1, 0, 1, 2}</td></tr>
+          <tr><td><code>novelty_score_justification</code>, <code>novelty_detailed_assessment</code></td><td>The paper-level assessment: a short justification and a longer analysis of novel and incremental aspects</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Splits.</strong> Papers are split into 31,411 for training and 6,488 for testing, so that all reviews of a paper fall into the same split. A fixed subset of 500 test papers, covering all four scores, is used for evaluation in the paper. <strong>Privacy.</strong> Author names, e-mail addresses and identifying links are removed from every text field, and full paper texts are not redistributed; the code downloads them from OpenReview when needed. The <a href="https://huggingface.co/datasets/AbeerMostafa/Novelty-Reviewer-Dataset">dataset card</a> documents the construction and all fields in detail.</p>
+  </div>
+</section>
+
+<section id="framework">
+  <div class="wrap">
+    <h2>Framework</h2>
+    <p class="lead">At the core is the Novelty Reviewer model: Llama-3.1-8B-Instruct, fully fine-tuned for three epochs on the full text of 25,951 training papers, converted to markdown, with their ECNA score and assessment as the target. On its own, it reads a paper and judges its novelty as reviewers would. The framework adds what a model cannot know from training alone: the specific prior work a paper should be compared with.</p>
+
+    <ol class="steps">
+      <li><h4>Extract the paper's knowledge</h4>An LLM reads the manuscript and lists its core ideas, methods, contributions, keywords, data sources and experiments as structured JSON. This turns a long paper into a compact description that can be searched and compared.</li>
+      <li><h4>Retrieve related work</h4>Each aspect becomes a search query: up to seven queries, for example the core ideas, the methods, or a core idea combined with its data source. They are sent to Semantic Scholar, and the most cited unique results (20 by default) are kept. For each candidate, the same knowledge extraction is applied to its open-access full text or abstract.</li>
+      <li><h4>Build a similarity graph</h4>The manuscript and the candidates are compared aspect by aspect with sentence embeddings, and linked in a graph whenever they are sufficiently similar. Candidates are ranked by a mix of their similarity to the manuscript and their centrality in the graph, so that work which overlaps with many related papers rises to the top. For the top-ranked papers, the LLM also writes a short explanation of where the overlap lies.</li>
+      <li><h4>Assess novelty</h4>The fine-tuned model reads the manuscript together with summaries of the top-ranked papers and writes the novelty score and assessment. The final report combines this assessment with the manuscript summary and the ranked list of similar papers, with their year, citation count, link and overlap explanation, as markdown and JSON.</li>
+    </ol>
+    <p>The steps can also be used separately: the model alone needs only the paper, while retrieval and the graph are useful on their own for finding related work.</p>
+  </div>
+</section>
+
+<section id="get-started" class="alt">
+  <div class="wrap">
+    <h2>Getting started</h2>
+    <p class="lead">Everything is packaged as a Python library with a command-line tool. Choose the installation that matches what you need: the dataset tools run on any machine, while the model and the framework need a GPU.</p>
+
+    <div class="code"><div class="bar"><span>Installation</span><button class="copy" type="button">Copy</button></div><pre><code>git clone https://github.com/m2l-lab/Novelty-Reviewer.git
+cd Novelty-Reviewer
+pip install -e .              <span class="tok-c"># dataset tools (CPU)</span>
+pip install -e ".[model]"     <span class="tok-c"># + model inference</span>
+pip install -e ".[all]"       <span class="tok-c"># + originality framework, evaluation and notebooks</span></code></pre></div>
+
+    <div class="tabs" role="tablist" aria-label="Usage examples">
+      <button role="tab" aria-selected="true" aria-controls="tab-data" id="t-data">Explore the data</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-predict" id="t-predict" tabindex="-1">Score a paper</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-report" id="t-report" tabindex="-1">Originality report</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-cli" id="t-cli" tabindex="-1">Command line</button>
+    </div>
+    <div class="tabpanel" role="tabpanel" id="tab-data" aria-labelledby="t-data">
+      <p>Load the dataset from Hugging Face, read the novelty annotation of a paper, and select the evaluation subset. The package adds helpers on top of the standard <code>datasets</code> API.</p>
+      <div class="code"><div class="bar"><span>Python</span><button class="copy" type="button">Copy</button></div><pre><code><span class="tok-k">from</span> novelty_reviewer <span class="tok-k">import</span> load_novelty_dataset, eval_subset, reviews_frame
+
+ds = <span class="tok-f">load_novelty_dataset</span>()                    <span class="tok-c"># DatasetDict with "train" and "test"</span>
+paper = ds[<span class="tok-s">"test"</span>][<span class="tok-n">0</span>]
+<span class="tok-f">print</span>(paper[<span class="tok-s">"title"</span>], paper[<span class="tok-s">"novelty_score"</span>])
+<span class="tok-f">print</span>(paper[<span class="tok-s">"novelty_excerpts"</span>])               <span class="tok-c"># what the reviewers said</span>
+<span class="tok-f">print</span>(paper[<span class="tok-s">"novelty_score_justification"</span>])    <span class="tok-c"># the paper-level assessment</span>
+
+benchmark = <span class="tok-f">eval_subset</span>(ds[<span class="tok-s">"test"</span>])           <span class="tok-c"># the 500 papers evaluated in the paper</span>
+reviews = <span class="tok-f">reviews_frame</span>(ds[<span class="tok-s">"test"</span>])          <span class="tok-c"># one row per review, with all scores</span></code></pre></div>
+    </div>
+    <div class="tabpanel" role="tabpanel" id="tab-predict" aria-labelledby="t-predict" hidden>
+      <p>Convert a PDF to markdown and ask the model for a score and justification. The recommended decoding settings (temperature 0.1, top-p 0.5, 300 new tokens) are applied by default.</p>
+      <div class="code"><div class="bar"><span>Python</span><button class="copy" type="button">Copy</button></div><pre><code><span class="tok-k">from</span> novelty_reviewer <span class="tok-k">import</span> NoveltyReviewer
+<span class="tok-k">from</span> novelty_reviewer.pdf <span class="tok-k">import</span> pdf_to_markdown
+
+reviewer = NoveltyReviewer.<span class="tok-f">from_pretrained</span>()        <span class="tok-c"># AbeerMostafa/Novelty_Reviewer</span>
+prediction = reviewer.<span class="tok-f">predict</span>(<span class="tok-f">pdf_to_markdown</span>(<span class="tok-s">"paper.pdf"</span>))
+
+<span class="tok-f">print</span>(prediction.score, prediction.label)           <span class="tok-c"># e.g. 1 Moderately novel</span>
+<span class="tok-f">print</span>(prediction.review)</code></pre></div>
+    </div>
+    <div class="tabpanel" role="tabpanel" id="tab-report" aria-labelledby="t-report" hidden>
+      <p>Run the full framework. A free <a href="https://www.semanticscholar.org/product/api">Semantic Scholar API key</a> in <code>S2_API_KEY</code> avoids rate limits; <code>share_model=True</code> uses one GPU model for both extraction and assessment.</p>
+      <div class="code"><div class="bar"><span>Python</span><button class="copy" type="button">Copy</button></div><pre><code><span class="tok-k">from</span> novelty_reviewer <span class="tok-k">import</span> OriginalityAnalyzer
+<span class="tok-k">from</span> novelty_reviewer.pdf <span class="tok-k">import</span> pdf_to_markdown
+
+analyzer = OriginalityAnalyzer.<span class="tok-f">from_pretrained</span>(share_model=<span class="tok-k">True</span>)
+report = analyzer.<span class="tok-f">analyze</span>(<span class="tok-f">pdf_to_markdown</span>(<span class="tok-s">"paper.pdf"</span>), top_k=<span class="tok-n">5</span>)
+
+<span class="tok-f">print</span>(report.<span class="tok-f">to_markdown</span>())     <span class="tok-c"># score, assessment and the most similar prior work</span>
+report.<span class="tok-f">save</span>(<span class="tok-s">"reports/"</span>)         <span class="tok-c"># markdown and JSON</span></code></pre></div>
+    </div>
+    <div class="tabpanel" role="tabpanel" id="tab-cli" aria-labelledby="t-cli" hidden>
+      <p>The same functions from the shell. With <code>--paper-id</code>, the paper is downloaded from OpenReview and converted automatically.</p>
+      <div class="code"><div class="bar"><span>Shell</span><button class="copy" type="button">Copy</button></div><pre><code>novelty-reviewer predict --pdf paper.pdf
+novelty-reviewer predict --paper-id &lt;openreview-id&gt;
+novelty-reviewer analyze --pdf paper.pdf --output reports</code></pre></div>
+    </div>
+
+    <h3>Practical notes</h3>
+    <ul class="list">
+      <li><strong>Hardware.</strong> The 8B model needs about 16 GB in bf16; a GPU with at least 24 GB is recommended for full-length papers. Access to <a href="https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct">Llama 3.1</a> on Hugging Face is required (<code>huggingface-cli login</code>).</li>
+      <li><strong>Input.</strong> The model was trained on full papers in markdown. Give it the whole paper, not only the abstract; <code>pdf_to_markdown</code> handles the conversion.</li>
+      <li><strong>Decoding.</strong> The reported results use temperature 0.1, top-p 0.5 and 300 new tokens. The defaults in the model's <code>generation_config.json</code> come from the base model and give more varied outputs.</li>
+    </ul>
+
+    <h3>Tutorials</h3>
+    <p>Four notebooks walk through the main use cases. The <a href="https://github.com/m2l-lab/Novelty-Reviewer/blob/main/notebooks/01_dataset_tour.ipynb">dataset tour</a> covers loading, record anatomy, statistics and label validity on a CPU. <a href="https://github.com/m2l-lab/Novelty-Reviewer/blob/main/notebooks/02_predict_novelty.ipynb">Predicting novelty</a> scores OpenReview papers and your own PDFs. <a href="https://github.com/m2l-lab/Novelty-Reviewer/blob/main/notebooks/03_originality_report.ipynb">Originality reports</a> runs retrieval, the similarity graph and the grounded assessment step by step. <a href="https://github.com/m2l-lab/Novelty-Reviewer/blob/main/notebooks/04_benchmark_a_model.ipynb">Benchmarking a model</a> evaluates any LLM on the evaluation subset with the paper's protocol. To reproduce a specific result, the <a href="https://github.com/m2l-lab/Novelty-Reviewer/blob/main/docs/REPRODUCIBILITY.md">reproducibility guide</a> maps each section of the paper to its code and commands.</p>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>FAQ</h2>
+    <div class="faq">
+      <details><summary>Can I use it on my own paper before submission?</summary><p>Yes. Convert the PDF with <code>pdf_to_markdown</code> and run <code>NoveltyReviewer.predict</code> or the full framework. Treat the result as feedback on how reviewers might perceive the novelty, and use the retrieved papers as a checklist of related work you may need to discuss.</p></details>
+      <details><summary>Does the model see who wrote the paper?</summary><p>The model only reads the text you give it, so for anonymous submissions use the anonymized PDF. In the released dataset, author names, e-mail addresses and identifying links are removed from all text fields.</p></details>
+      <details><summary>Does it work outside machine learning?</summary><p>The training data comes from ICLR and NeurIPS, so the model is calibrated to machine learning reviewing. It also generalized to MIDL 2026, a medical imaging venue not seen in training, but other fields should be validated before relying on the scores. The retrieval step works for any field covered by Semantic Scholar.</p></details>
+      <details><summary>How do I evaluate my own model on the benchmark?</summary><p>Use the 500 papers marked <code>in_eval_subset</code> and the scripts in <code>scripts/evaluation</code>, or follow notebook 04. They download the papers from OpenReview, generate predictions with the paper's prompt and compute all metrics, so your numbers are directly comparable to the table above.</p></details>
+      <details><summary>Can I use the data or the model commercially?</summary><p>The dataset is released under CC BY-NC 4.0, which does not allow commercial use, and the reviews it contains come from OpenReview under their original licenses. The model is subject to the Llama 3.1 Community License. The code is MIT-licensed.</p></details>
+      <details><summary>Why does a paper get a different score from the reviewers?</summary><p>ECNA labels summarize reviewer opinion, which is itself subjective and varies between reviewers. The model predicts that consensus from the paper alone and can miss context that reviewers had, such as concurrent work or rebuttal discussions. That is why the framework shows the related work behind each assessment, so you can check it.</p></details>
+    </div>
+
+    <h3>Responsible use</h3>
+    <p>Novelty Reviewer is a decision-support tool. It should help people review more carefully, not decide for them: it must not be used for automatic accept/reject decisions, to evaluate or rank researchers, or to accuse anyone of plagiarism without human verification. Its scores reflect reviewer opinion rather than ground-truth novelty, its labels were generated by an LLM and validated on a sample, and it was trained on two English-language machine learning venues.</p>
+  </div>
+</section>
+
+<section id="arena" class="alt">
+  <div class="wrap">
+    <h2>Research project</h2>
+    <p class="lead">Novelty Reviewer is developed within <strong>ARENA</strong>, a research project on integrating large language models with knowledge graphs for scientific paper reviewing.</p>
+    <p>AI support in peer review promises more efficient and more accurate reviewing, but it still struggles with semantic understanding and consistency. Reaching human-level review quality is difficult, because what makes a review "good" is hard to define and annotated data is scarce. AI-generated reviews may cover more aspects of a paper, yet they are often less constructive and less factual than human reviews.</p>
+    <p><strong>The goal of ARENA</strong> is to generate factual, evidence-based review statements. It does so by integrating the structure of research papers, using techniques such as argument mining to analyze a paper's reasoning and evidence, and by drawing on knowledge graphs that bring in external information to assess a paper's impact and contribution to its field. Novelty Reviewer realizes this goal for one of the hardest review criteria: it pairs a model trained on expert judgments with a similarity graph over the related literature, so that every novelty assessment can be traced back to concrete prior work.</p>
+    <p><strong>Acknowledgements.</strong> ARENA is funded by the Lower Saxony Ministry of Science and Culture (MWK) through the Leibniz Young Investigator Grant program (LYIG-2023-01). This work was also supported by the German Federal Ministry of Research, Technology and Space (EMuLE, 16IS24059) and by the Volkswagen Foundation's Zukunft Niedersachsen program (CAIMed, ZN4257).</p>
+    <p class="thanks">We thank OpenReview and the ICLR and NeurIPS communities for making their reviews publicly available, and the reviewers and authors whose work this dataset is built on.</p>
+  </div>
+</section>
+
+<section id="citation">
+  <div class="wrap">
+    <h2>Citation</h2>
+    <p>If you use the dataset, the model or the code, please cite the paper:</p>
+    <div class="code wrap"><div class="bar"><span>BibTeX</span><button class="copy" type="button">Copy</button></div><pre><code>@misc{mostafa2026novelty,
+  title         = {Are We Truly Innovating? A Qualitative and Quantitative Study of Originality in AI Research Papers},
+  author        = {Mostafa, Abeer and Nguyen, Thi Huyen and Ahmadi, Zahra},
+  year          = {2026},
+  eprint        = {2602.06054},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2602.06054}
+}</code></pre></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Code: <a href="https://github.com/m2l-lab/Novelty-Reviewer/blob/main/LICENSE">MIT</a> · Data: <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> · Model: <a href="https://www.llama.com/llama3_1/license/">Llama 3.1 Community License</a> · Built with Llama</p>
+    <p>Questions or ideas? <a href="https://github.com/m2l-lab/Novelty-Reviewer/issues">Open an issue</a> or write to <a href="mailto:Mansour.Abeer@mh-hannover.de">Mansour.Abeer@mh-hannover.de</a>.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.documentElement;
+
+  // Theme toggle: remembers the choice, otherwise follows the system setting.
+  var stored = null;
+  try { stored = localStorage.getItem("theme"); } catch (e) {}
+  if (stored) root.setAttribute("data-theme", stored);
+  document.getElementById("theme").addEventListener("click", function () {
+    var dark = root.getAttribute("data-theme") === "dark" ||
+      (!root.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+    var next = dark ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("theme", next); } catch (e) {}
+  });
+
+  // Copy buttons
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      navigator.clipboard.writeText(btn.closest(".code").querySelector("pre").innerText).then(function () {
+        btn.textContent = "Copied";
+        setTimeout(function () { btn.textContent = "Copy"; }, 1500);
+      });
+    });
+  });
+
+  // Tabs
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function select(tab) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute("aria-selected", on);
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { select(t); });
+    t.addEventListener("keydown", function (e) {
+      var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (d) { var n = tabs[(i + d + tabs.length) % tabs.length]; select(n); n.focus(); }
+    });
+  });
+
+  // Active section in the navigation
+  var links = document.querySelectorAll(".nav ul a");
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      links.forEach(function (a) { a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+    });
+  }, { rootMargin: "-45% 0px -50% 0px" });
+  document.querySelectorAll("main section[id]").forEach(function (s) { observer.observe(s); });
+
+  // Charts
+  var NS = "http://www.w3.org/2000/svg";
+  function el(name, attrs, parent) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function fmt(n) { return n.toLocaleString("en-US"); }
+  function barPath(x, y, w, h) {
+    var r = Math.min(4, w / 2, h);
+    return "M" + x + "," + (y + h) + "V" + (y + r) + "Q" + x + "," + y + " " + (x + r) + "," + y +
+      "H" + (x + w - r) + "Q" + (x + w) + "," + y + " " + (x + w) + "," + (y + r) + "V" + (y + h) + "Z";
+  }
+  function hBarPath(x, y, w, h) {
+    var r = Math.min(4, h / 2, w);
+    return "M" + x + "," + y + "H" + (x + w - r) + "Q" + (x + w) + "," + y + " " + (x + w) + "," + (y + r) +
+      "V" + (y + h - r) + "Q" + (x + w) + "," + (y + h) + " " + (x + w - r) + "," + (y + h) + "H" + x + "Z";
+  }
+  function tooltip(box) {
+    var t = document.createElement("div");
+    t.className = "tip";
+    box.appendChild(t);
+    return {
+      show: function (evt, html) {
+        var r = box.getBoundingClientRect();
+        t.innerHTML = html;
+        t.style.left = (evt.clientX - r.left) + "px";
+        t.style.top = (evt.clientY - r.top - 6) + "px";
+        t.classList.add("on");
+      },
+      hide: function () { t.classList.remove("on"); }
+    };
+  }
+  function hover(hit, plot, grp, tip, html) {
+    hit.addEventListener("mousemove", function (e) { plot.classList.add("dim"); grp.classList.add("on"); tip.show(e, html); });
+    hit.addEventListener("mouseleave", function () { plot.classList.remove("dim"); grp.classList.remove("on"); tip.hide(); });
+  }
+
+  // Grouped bars: submissions per venue and year
+  (function () {
+    var box = document.getElementById("chart-venues"), svg = box.querySelector("svg"), tip = tooltip(box);
+    var years = ["2022", "2023", "2024", "2025"];
+    var series = [
+      { name: "ICLR", color: "var(--series-1)", v: [2420, 3431, 6644, 10474] },
+      { name: "NeurIPS", color: "var(--series-2)", v: [2543, 3108, 3819, 5460] }
+    ];
+    var W = 480, H = 250, m = { l: 40, r: 8, t: 14, b: 28 }, iw = W - m.l - m.r, ih = H - m.t - m.b, max = 12000;
+    var y = function (v) { return m.t + ih - v / max * ih; };
+    for (var g = 0; g <= max; g += 3000) {
+      el("line", { x1: m.l, x2: W - m.r, y1: y(g), y2: y(g), "class": g ? "gridline" : "baseline" }, svg);
+      el("text", { x: m.l - 8, y: y(g) + 4, "text-anchor": "end" }, svg).textContent = g ? (g / 1000) + "k" : "0";
+    }
+    var gw = iw / years.length, bw = Math.min(30, gw * 0.3), gap = 2, plot = el("g", {}, svg);
+    years.forEach(function (yr, i) {
+      var cx = m.l + gw * i + gw / 2;
+      el("text", { x: cx, y: H - 8, "text-anchor": "middle", "class": "cat" }, svg).textContent = yr;
+      series.forEach(function (s, j) {
+        var x = cx - bw - gap / 2 + j * (bw + gap), v = s.v[i], grp = el("g", {}, plot);
+        el("path", { d: barPath(x, y(v), bw, y(0) - y(v)), fill: s.color, "class": "bar" }, grp);
+        var hit = el("rect", { x: x - 1, y: m.t, width: bw + 2, height: ih, "class": "hit" }, grp);
+        hover(hit, plot, grp, tip, "<b>" + s.name + " " + yr + "</b><br>" + fmt(v) + " submissions");
+      });
+    });
+    el("text", { x: m.l + gw * 3 + gw / 2 - bw / 2 - gap / 2, y: y(10474) - 6, "text-anchor": "middle", "class": "val" }, svg).textContent = "10,474";
+  })();
+
+  // Horizontal bars: ECNA score distribution
+  (function () {
+    var box = document.getElementById("chart-labels"), svg = box.querySelector("svg"), tip = tooltip(box);
+    var rows = [
+      { s: "−1", l: "Not novel", n: 2924 },
+      { s: "0", l: "Limited novelty", n: 7606 },
+      { s: "1", l: "Moderately novel", n: 24177 },
+      { s: "2", l: "Highly novel", n: 3183 }
+    ];
+    var total = 37890, W = 480, H = 250, m = { l: 140, r: 56, t: 10, b: 10 }, iw = W - m.l - m.r;
+    var rh = (H - m.t - m.b) / rows.length, bh = Math.min(30, rh * 0.56), max = 0.7, plot = el("g", {}, svg);
+    el("line", { x1: m.l, x2: m.l, y1: m.t, y2: H - m.b, "class": "baseline" }, svg);
+    rows.forEach(function (r, i) {
+      var share = r.n / total, cy = m.t + rh * i + rh / 2, w = share / max * iw, grp = el("g", {}, plot);
+      el("text", { x: m.l - 12, y: cy - 2, "text-anchor": "end", "class": "cat" }, svg).textContent = r.l;
+      el("text", { x: m.l - 12, y: cy + 13, "text-anchor": "end" }, svg).textContent = "score " + r.s;
+      el("path", { d: hBarPath(m.l + 1, cy - bh / 2, w, bh), fill: "var(--series-1)", "class": "bar" }, grp);
+      el("text", { x: m.l + 1 + w + 8, y: cy + 4, "class": "val" }, svg).textContent = (share * 100).toFixed(1) + "%";
+      var hit = el("rect", { x: m.l, y: cy - rh / 2, width: iw + m.r, height: rh, "class": "hit" }, grp);
+      hover(hit, plot, grp, tip, "<b>" + r.l + " (" + r.s + ")</b><br>" + fmt(r.n) + " submissions · " + (share * 100).toFixed(1) + "%");
+    });
+  })();
+})();
+</script>
+</body>
+</html>

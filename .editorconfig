@@ -1,0 +1,14 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+[*.py]
+indent_style = space
+indent_size = 4
+
+# Prompts contain intentional trailing spaces.
+[src/novelty_reviewer/prompts.py]
+trim_trailing_whitespace = false
